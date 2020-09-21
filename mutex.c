@@ -54,7 +54,7 @@ void *start_counting(void *arg)
 // }
 int main(int argc, char **argv)
 {
-    pthread_t *thread_group = malloc(sizeof(pthread_t) * 3);
+    pthread_t *thread_group =(pthread_t *) malloc(sizeof(pthread_t) * 3);
 
     int j1 = 0, j2 = 1, j3 = 2;
     pthread_create(&thread_group[0], NULL, start_counting, &j1);
@@ -72,6 +72,7 @@ int main(int argc, char **argv)
     else
         printf("SYNCED \n");
     printf("\n");
+    free(thread_group);
     //cout<<ar[0]<<" "<<ar[1]<<" "<<ar[2]<<"\n";
     return 0;
 }
