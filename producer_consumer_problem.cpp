@@ -15,6 +15,7 @@ using namespace std;
 queue<int> q;
 static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 sem_t  empty_slots, filled_slots;
+// mutex       : //because non atmic operation inside critical section may lead to inconsistency
 // filled_slots: //to keep min_limit on buffer while consumer it
                  // UnderFlow
                  
