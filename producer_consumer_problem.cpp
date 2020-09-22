@@ -13,7 +13,8 @@ using namespace std;
 //Producer Consumer Problem
 
 queue<int> q;
-sem_t mutex, empty_slots, filled_slots;
+static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+sem_t  empty_slots, filled_slots;
 // filled_slots: //to keep min_limit on buffer while consumer it
                  // UnderFlow
                  
@@ -29,13 +30,13 @@ void *producer(void *args)
     for (int i = 0; ; i++)
     {
         sem_wait(&empty_slots);    //sleep(0.2);
-        sem_wait(&mutex);
+        pthread_mutex_lock(&mutex);
 
         printf("Produced item %d\n",i);
         produced++;
         q.push(i);
 
-        sem_post(&mutex);    //sleep(0.3);
+        pthread_mutex_unlock(&mutex);    //sleep(0.3);
         sem_post(&filled_slots);
 
     }
@@ -49,7 +50,7 @@ void *consumer(void *args)
     {
         //sleep(100);
         sem_wait(&filled_slots);    //sleep(0.3);
-        sem_wait(&mutex);
+        pthread_mutex_lock(&mutex);
 
         temp = q.front();
         printf("Consuming item %d by %d\n", temp,*(int *)args);
@@ -58,7 +59,7 @@ void *consumer(void *args)
         q.pop();
         printf("[STATUS] %d %d %d\n",ar[1],ar[2],ar[3]);
         //sleep(1);
-        sem_post(&mutex);       //sleep(0.6);
+        pthread_mutex_unlock(&mutex);       //sleep(0.6);
         sem_post(&empty_slots); //sleep(1.2);
         assert(produced>=consumed);
     }
@@ -68,7 +69,7 @@ int main(int argc, char **argv)
 {
     pthread_t t1, t2,t3,t4;
 
-    sem_init(&mutex, 0, 1);
+    //sem_init(&mutex, 0, 1);
     sem_init(&filled_slots, 0, 0);
     sem_init(&empty_slots, 0, 6);
 
