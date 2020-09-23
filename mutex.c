@@ -6,10 +6,13 @@
 #include <pthread.h>
 
 //return void pointer
-
+/*
+    [IMPORTANT INFO ON MUTEX FLAGS]
+https://stackoverflow.com/questions/5454746/pthread-mutex-lock-unlock-by-different-threads/5492499#5492499
+*/
 int MAX = 50000, i1 = 0;
 int ar[3] = {};
-static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t mutex = PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP;
 void *start_counting(void *arg)
 {
     for (;;)
