@@ -9,34 +9,24 @@
 
 using namespace std;
 
- static pthread_mutex_t mutex1 = PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP;
- static pthread_mutex_t mutex2 = PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP;
+static pthread_mutex_t mutex1 = PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP;
+static pthread_mutex_t mutex2 = PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP;
 // sem_t mutex;
 void *fx(void *args)
 {
-    if(*(int*)args==2)
+    if (*(int *)args == 2)
         sleep(1);
-    if(*(int*)args==1)
-    printf("%d %d\n",*(int*)args,pthread_mutex_lock(&mutex1));
-    if(*(int*)args==2)
-    printf("%d %d\n",*(int*)args,pthread_mutex_lock(&mutex2));
-    printf("%d\n",*(int*)args);
-    int rc;
+    if (*(int *)args == 1)
+        printf("%d %d\n", *(int *)args, pthread_mutex_lock(&mutex1));
+    if (*(int *)args == 2)
+        printf("%d %d\n", *(int *)args, pthread_mutex_lock(&mutex2));
+    printf("%d\n", *(int *)args);
 
-   if ((rc = pthread_mutex_unlock(&mutex1)) != 0)
-   {
-       errno = rc;
-       perror("other thread unlock result");
-       exit(1);
-   }
-    //int rc;
+    while (pthread_mutex_unlock(&mutex1) != 0)
+        ;
+    while (pthread_mutex_unlock(&mutex2) != 0)
+        ;
 
-   if ((rc = pthread_mutex_unlock(&mutex2)) != 0)
-   {
-       errno = rc;
-       perror("other thread unlock result");
-       exit(1);
-   }
     return NULL;
 }
 int main(int argc, char **argv)
